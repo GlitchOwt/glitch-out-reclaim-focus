@@ -18,12 +18,6 @@
     --glitch-red: 0 100% 50%;
     --glitch-cyan: 180 100% 50%;
     --glitch-purple: 270 100% 50%;
-    
-    /* Manifesto color system */
-    --color-glitch-primary-background: 255 255 255;
-    --color-glitch-text-primary: 10 10 10;
-    --color-glitch-text-secondary: 102 102 102;
-    --color-glitch-accent-primary: 26 95 63;
 
     --card: 0 0% 100%;
     --card-foreground: 0 0% 5%;
