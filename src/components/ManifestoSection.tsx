@@ -215,7 +215,7 @@ export default function ManifestoSection() {
                 whileHover={{ x: "0%" }}
                 transition={{ duration: 0.3 }}
               />
-              <span className="relative z-10 text-white transition-colors duration-300">up
+              <span className="relative z-10 text-white transition-colors duration-300">
                 Join the Movement
               </span>
             </Button>
