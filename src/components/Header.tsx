@@ -13,6 +13,15 @@ const Header = () => {
     { name: "Join", href: "#join" },
   ];
 
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      setIsMenuOpen(false);
+    }
+  };
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="max-w-7xl mx-auto container-padding">
@@ -32,6 +41,7 @@ const Header = () => {
               <a
                 key={item.name}
                 href={item.href}
+                onClick={(e) => handleScroll(e, item.href)}
                 className="text-muted-foreground hover:text-primary transition-colors duration-200 font-medium"
               >
                 {item.name}
@@ -59,8 +69,8 @@ const Header = () => {
                 <a
                   key={item.name}
                   href={item.href}
+                  onClick={(e) => handleScroll(e, item.href)}
                   className="block px-3 py-2 text-muted-foreground hover:text-primary transition-colors duration-200 font-medium"
-                  onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
                 </a>

@@ -34,11 +34,20 @@ const HeroSection = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up animate-delay-400">
-            <Button size="lg" className="px-8 py-4 text-lg">
+            <Button 
+              size="lg" 
+              className="px-8 py-4 text-lg"
+              onClick={() => document.getElementById('apps')?.scrollIntoView({ behavior: 'smooth' })}
+            >
               Explore Our Apps
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
-            <Button variant="minimal" size="lg" className="px-8 py-4 text-lg">
+            <Button 
+              variant="minimal" 
+              size="lg" 
+              className="px-8 py-4 text-lg"
+              onClick={() => document.getElementById('join')?.scrollIntoView({ behavior: 'smooth' })}
+            >
               Join the Movement
             </Button>
           </div>
