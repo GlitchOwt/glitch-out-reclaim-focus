@@ -61,7 +61,17 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// GlitchOwt brand colors
+				'brand-green': 'hsl(var(--brand-green))',
+				'glitch-red': 'hsl(var(--glitch-red))',
+				'glitch-cyan': 'hsl(var(--glitch-cyan))',
+				'glitch-purple': 'hsl(var(--glitch-purple))'
+			},
+			fontFamily: {
+				'pixel': ['VT323', 'monospace'],
+				'serif': ['Playfair Display', 'serif'],
+				'sans': ['Inter', 'sans-serif']
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

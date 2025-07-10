@@ -2,41 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* GlitchOwt Design System - Voice-first, minimal, editorial with glitch aesthetics */
 
 @layer base {
   :root {
+    /* Core brand colors */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 0 0% 5%;
+    
+    /* Royal green accent */
+    --brand-green: 165 100% 11%;
+    --brand-green-foreground: 0 0% 98%;
+    
+    /* Glitch effects */
+    --glitch-red: 0 100% 50%;
+    --glitch-cyan: 180 100% 50%;
+    --glitch-purple: 270 100% 50%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 5%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 0 0% 5%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 165 100% 11%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 20%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 165 100% 11%;
+    --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 165 100% 11%;
 
-    --radius: 0.5rem;
+    /* Editorial spacing */
+    --radius: 0.25rem;
+    
+    /* Typography scale */
+    --font-pixel: 'VT323', monospace;
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Inter', sans-serif;
+    
+    /* Glitch animation variables */
+    --glitch-intensity: 3px;
+    --glitch-duration: 0.3s;
 
     --sidebar-background: 0 0% 98%;
 
@@ -100,6 +118,122 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
   }
+}
+
+@layer components {
+  /* Glitch text effect */
+  .glitch {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+  }
+  
+  .glitch::before {
+    animation: glitch-1 var(--glitch-duration) infinite linear alternate-reverse;
+    color: hsl(var(--glitch-red));
+    z-index: -1;
+  }
+  
+  .glitch::after {
+    animation: glitch-2 var(--glitch-duration) infinite linear alternate-reverse;
+    color: hsl(var(--glitch-cyan));
+    z-index: -2;
+  }
+  
+  /* Pixel font utility */
+  .font-pixel {
+    font-family: var(--font-pixel);
+    font-weight: 400;
+  }
+  
+  .font-serif {
+    font-family: var(--font-serif);
+  }
+  
+  .font-sans {
+    font-family: var(--font-sans);
+  }
+  
+  /* Editorial spacing */
+  .section-padding {
+    @apply py-16 md:py-24;
+  }
+  
+  .container-padding {
+    @apply px-6 md:px-8 lg:px-12;
+  }
+  
+  /* Hover effects */
+  .hover-glitch:hover .glitch::before {
+    animation: glitch-1 0.1s infinite linear alternate-reverse;
+  }
+  
+  .hover-glitch:hover .glitch::after {
+    animation: glitch-2 0.1s infinite linear alternate-reverse;
+  }
+}
+
+@layer utilities {
+  /* Glitch animations */
+  @keyframes glitch-1 {
+    0% { transform: translateX(0) translateY(0); }
+    10% { transform: translateX(-2px) translateY(2px); }
+    20% { transform: translateX(-3px) translateY(0px); }
+    30% { transform: translateX(3px) translateY(-1px); }
+    40% { transform: translateX(-1px) translateY(-1px); }
+    50% { transform: translateX(2px) translateY(2px); }
+    60% { transform: translateX(-2px) translateY(1px); }
+    70% { transform: translateX(-3px) translateY(1px); }
+    80% { transform: translateX(-1px) translateY(-1px); }
+    90% { transform: translateX(2px) translateY(2px); }
+    100% { transform: translateX(1px) translateY(0px); }
+  }
+  
+  @keyframes glitch-2 {
+    0% { transform: translateX(0) translateY(0); }
+    15% { transform: translateX(2px) translateY(-2px); }
+    25% { transform: translateX(-1px) translateY(2px); }
+    35% { transform: translateX(-3px) translateY(1px); }
+    45% { transform: translateX(2px) translateY(-1px); }
+    55% { transform: translateX(-1px) translateY(-2px); }
+    65% { transform: translateX(-3px) translateY(0px); }
+    75% { transform: translateX(2px) translateY(1px); }
+    85% { transform: translateX(-2px) translateY(-1px); }
+    95% { transform: translateX(-1px) translateY(1px); }
+    100% { transform: translateX(0px) translateY(0px); }
+  }
+  
+  /* Fade animations */
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fade-in-up {
+    animation: fade-in-up 0.6s ease-out forwards;
+  }
+  
+  /* Staggered animations */
+  .animate-delay-100 { animation-delay: 100ms; }
+  .animate-delay-200 { animation-delay: 200ms; }
+  .animate-delay-300 { animation-delay: 300ms; }
+  .animate-delay-400 { animation-delay: 400ms; }
 }
