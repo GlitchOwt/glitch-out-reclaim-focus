@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Mic, Smartphone } from "lucide-react";
+// import ClickSpark from "./ClickSpark"; // Remove this import
 
 const HeroSection = () => {
   return (
