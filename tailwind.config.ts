@@ -52,19 +52,25 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				// Cyber color palette
-				'cyber-green': 'hsl(var(--cyber-green))',
-				'cyber-pink': 'hsl(var(--cyber-pink))',
-				'electric-blue': 'hsl(var(--electric-blue))',
-				'deep-black': 'hsl(var(--deep-black))',
-				'dark-gray': 'hsl(var(--dark-gray))',
-				'warning-orange': 'hsl(var(--warning-orange))',
-				'ai-teal': 'hsl(var(--ai-teal))',
-				'ai-purple': 'hsl(var(--ai-purple))',
-				'ai-cyan': 'hsl(var(--ai-cyan))'
+				sidebar: {
+					DEFAULT: 'hsl(var(--sidebar-background))',
+					foreground: 'hsl(var(--sidebar-foreground))',
+					primary: 'hsl(var(--sidebar-primary))',
+					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+					accent: 'hsl(var(--sidebar-accent))',
+					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+					border: 'hsl(var(--sidebar-border))',
+					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// GlitchOwt brand colors
+				'brand-green': 'hsl(var(--brand-green))',
+				'glitch-red': 'hsl(var(--glitch-red))',
+				'glitch-cyan': 'hsl(var(--glitch-cyan))',
+				'glitch-purple': 'hsl(var(--glitch-purple))'
 			},
 			fontFamily: {
-				'vcr': ['VT323', 'monospace'],
+				'pixel': ['VT323', 'monospace'],
+				'serif': ['Playfair Display', 'serif'],
 				'sans': ['Inter', 'sans-serif']
 			},
 			borderRadius: {
