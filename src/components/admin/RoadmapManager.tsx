@@ -6,9 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Plus, Edit, Trash2, Mic, Shield, Brain, Car, Lightbulb, Zap, Users, Save } from "lucide-react";
-import type { Feature, Status } from "@/components/RoadmapSection";
-import { useToast } from "@/hooks/use-toast";
+import { Plus, Edit, Trash2, Mic, Shield, Brain, Car, Lightbulb, Zap, Users, GitBranch, LayoutTemplate, Smartphone, Plug } from "lucide-react";
+import { useRoadmapFeatures, type DatabaseFeature } from "@/hooks/useRoadmapFeatures";
 
 const iconOptions = [
   { value: "mic", label: "Mic", icon: <Mic className="w-4 h-4" /> },
@@ -19,6 +18,10 @@ const iconOptions = [
   { value: "zap", label: "Zap", icon: <Zap className="w-4 h-4" /> },
   { value: "users", label: "Users", icon: <Users className="w-4 h-4" /> },
   { value: "plus", label: "Plus", icon: <Plus className="w-4 h-4" /> },
+  { value: "git-branch", label: "Git Branch", icon: <GitBranch className="w-4 h-4" /> },
+  { value: "layout-template", label: "Template", icon: <LayoutTemplate className="w-4 h-4" /> },
+  { value: "smartphone", label: "Smartphone", icon: <Smartphone className="w-4 h-4" /> },
+  { value: "plug", label: "Plug", icon: <Plug className="w-4 h-4" /> },
 ];
 
 const getIconComponent = (iconValue: string) => {
@@ -27,87 +30,20 @@ const getIconComponent = (iconValue: string) => {
 };
 
 const RoadmapManager = () => {
-  const { toast } = useToast();
+  const { features, loading, addFeature, updateFeature, deleteFeature } = useRoadmapFeatures();
   
-  const statuses: Status[] = [
-    { id: "ideas", name: "Ideas", color: "#6B7280" },
-    { id: "building", name: "Building", color: "#F59E0B" },
-    { id: "live", name: "Live", color: "#10B981" },
+  const statuses = [
+    { id: "planned", name: "Planned", color: "#6B7280" },
+    { id: "in-progress", name: "In Progress", color: "#F59E0B" },
+    { id: "done", name: "Done", color: "#10B981" },
   ];
 
-  const [features, setFeatures] = useState<Feature[]>([
-    {
-      id: "1",
-      name: "Qippy",
-      description: "Voice-first AI that handles Gmail, ChatGPT & WhatsApp. Only alerts when truly needed.",
-      status: statuses[2],
-      icon: <Mic className="w-4 h-4" />,
-      priority: "high"
-    },
-    {
-      id: "2", 
-      name: "GlitchOne",
-      description: "Your voice concierge for mobility. Book rides, handle logistics, run errands - all hands-free.",
-      status: statuses[1],
-      icon: <Car className="w-4 h-4" />,
-      priority: "high"
-    },
-    {
-      id: "3",
-      name: "Rakshak", 
-      description: "Empathetic safety companion for women. Voice-powered distress detection and response.",
-      status: statuses[1],
-      icon: <Shield className="w-4 h-4" />,
-      priority: "high"
-    },
-    {
-      id: "4",
-      name: "Zenith",
-      description: "Pre-therapy voice companion. Build mindful habits through natural conversation.",
-      status: statuses[0],
-      icon: <Brain className="w-4 h-4" />,
-      priority: "medium"
-    },
-    {
-      id: "5",
-      name: "Voice-First Calendar",
-      description: "Schedule meetings, set reminders, manage your day - all through natural speech.",
-      status: statuses[0],
-      icon: <Plus className="w-4 h-4" />,
-      priority: "medium"
-    },
-    {
-      id: "6",
-      name: "Smart Home Voice Hub",
-      description: "Control your entire smart home ecosystem through conversational AI.",
-      status: statuses[0],
-      icon: <Lightbulb className="w-4 h-4" />,
-      priority: "low"
-    },
-    {
-      id: "7",
-      name: "Voice Commerce Assistant",
-      description: "Shop, compare prices, and make purchases using only your voice.",
-      status: statuses[0],
-      icon: <Zap className="w-4 h-4" />,
-      priority: "low"
-    },
-    {
-      id: "8",
-      name: "Community Voice Network",
-      description: "Connect with like-minded people building voice-first lifestyles.",
-      status: statuses[0],
-      icon: <Users className="w-4 h-4" />,
-      priority: "medium"
-    }
-  ]);
-
-  const [editingFeature, setEditingFeature] = useState<Feature | null>(null);
+  const [editingFeature, setEditingFeature] = useState<DatabaseFeature | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    status: "ideas",
+    status: "planned",
     icon: "plus",
     priority: "medium" as "high" | "medium" | "low"
   });
@@ -116,7 +52,7 @@ const RoadmapManager = () => {
     setFormData({
       name: "",
       description: "",
-      status: "ideas",
+      status: "planned",
       icon: "plus",
       priority: "medium"
     });
@@ -128,61 +64,38 @@ const RoadmapManager = () => {
     setIsDialogOpen(true);
   };
 
-  const handleEditFeature = (feature: Feature) => {
+  const handleEditFeature = (feature: DatabaseFeature) => {
     setEditingFeature(feature);
     setFormData({
       name: feature.name,
       description: feature.description || "",
-      status: feature.status.id,
-      icon: "plus", // Default since we need to match the icon value
-      priority: feature.priority || "medium"
+      status: feature.status,
+      icon: feature.icon,
+      priority: feature.priority as "high" | "medium" | "low"
     });
     setIsDialogOpen(true);
   };
 
-  const handleDeleteFeature = (featureId: string) => {
-    setFeatures(features.filter(f => f.id !== featureId));
-    toast({
-      title: "Feature deleted",
-      description: "The feature has been removed from the roadmap.",
-    });
+  const handleDeleteFeature = async (featureId: string) => {
+    await deleteFeature(featureId);
   };
 
-  const handleSaveFeature = () => {
-    const status = statuses.find(s => s.id === formData.status)!;
-    
+  const handleSaveFeature = async () => {
     if (editingFeature) {
-      // Update existing feature
-      setFeatures(features.map(f => 
-        f.id === editingFeature.id 
-          ? {
-              ...f,
-              name: formData.name,
-              description: formData.description,
-              status,
-              icon: getIconComponent(formData.icon),
-              priority: formData.priority
-            }
-          : f
-      ));
-      toast({
-        title: "Feature updated",
-        description: "The feature has been successfully updated.",
-      });
-    } else {
-      // Add new feature
-      const newFeature: Feature = {
-        id: Date.now().toString(),
+      await updateFeature(editingFeature.id, {
         name: formData.name,
         description: formData.description,
-        status,
-        icon: getIconComponent(formData.icon),
+        status: formData.status,
+        icon: formData.icon,
         priority: formData.priority
-      };
-      setFeatures([...features, newFeature]);
-      toast({
-        title: "Feature added",
-        description: "The new feature has been added to the roadmap.",
+      });
+    } else {
+      await addFeature({
+        name: formData.name,
+        description: formData.description,
+        status: formData.status,
+        icon: formData.icon,
+        priority: formData.priority
       });
     }
     
@@ -190,14 +103,6 @@ const RoadmapManager = () => {
     resetForm();
   };
 
-  const handleSaveRoadmap = () => {
-    // In a real app, this would save to a database
-    localStorage.setItem('glitchowt-roadmap', JSON.stringify(features));
-    toast({
-      title: "Roadmap saved",
-      description: "All changes have been saved successfully.",
-    });
-  };
 
   return (
     <div className="space-y-6">
@@ -299,16 +204,17 @@ const RoadmapManager = () => {
             </DialogContent>
           </Dialog>
           
-          <Button onClick={handleSaveRoadmap} variant="outline" className="flex items-center gap-2">
-            <Save className="w-4 h-4" />
-            Save Changes
-          </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {statuses.map(status => {
-          const statusFeatures = features.filter(f => f.status.id === status.id);
+      {loading ? (
+        <div className="flex justify-center py-8">
+          <div className="text-muted-foreground">Loading features...</div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {statuses.map(status => {
+            const statusFeatures = features.filter(f => f.status === status.id);
           
           return (
             <Card key={status.id}>
@@ -327,7 +233,7 @@ const RoadmapManager = () => {
                     <div className="space-y-2">
                       <div className="flex items-start justify-between">
                         <div className="flex items-center gap-2 flex-1 min-w-0">
-                          {feature.icon}
+                          {getIconComponent(feature.icon)}
                           <h4 className="font-medium text-sm truncate">{feature.name}</h4>
                         </div>
                         <div className="flex gap-1">
@@ -356,19 +262,17 @@ const RoadmapManager = () => {
                         </p>
                       )}
                       
-                      {feature.priority && (
-                        <div className="flex justify-end">
-                          <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                            feature.priority === 'high' 
-                              ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
-                              : feature.priority === 'medium'
-                              ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300'
-                              : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
-                          }`}>
-                            {feature.priority}
-                          </span>
-                        </div>
-                      )}
+                      <div className="flex justify-end">
+                        <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                          feature.priority === 'high' 
+                            ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
+                            : feature.priority === 'medium'
+                            ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300'
+                            : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
+                        }`}>
+                          {feature.priority}
+                        </span>
+                      </div>
                     </div>
                   </Card>
                 ))}
@@ -376,7 +280,8 @@ const RoadmapManager = () => {
             </Card>
           );
         })}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

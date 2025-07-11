@@ -11,7 +11,8 @@ import type { DragEndEvent } from '@dnd-kit/core';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mic, Shield, Brain, Car, Plus, Lightbulb, Zap, Users } from 'lucide-react';
+import { Mic, Shield, Brain, Car, Plus, Lightbulb, Zap, Users, GitBranch, LayoutTemplate, Smartphone, Plug } from 'lucide-react';
+import { useRoadmapFeatures, type DatabaseFeature } from "@/hooks/useRoadmapFeatures";
 
 function cn(...args: any[]) {
   return args.filter(Boolean).join(' ');
@@ -210,81 +211,48 @@ export const KanbanProvider = ({
   </DndContext>
 );
 
+const getIconComponent = (iconValue: string) => {
+  const iconMap: Record<string, ReactNode> = {
+    mic: <Mic className="w-4 h-4" />,
+    shield: <Shield className="w-4 h-4" />,
+    brain: <Brain className="w-4 h-4" />,
+    car: <Car className="w-4 h-4" />,
+    lightbulb: <Lightbulb className="w-4 h-4" />,
+    zap: <Zap className="w-4 h-4" />,
+    users: <Users className="w-4 h-4" />,
+    plus: <Plus className="w-4 h-4" />,
+    "git-branch": <GitBranch className="w-4 h-4" />,
+    "layout-template": <LayoutTemplate className="w-4 h-4" />,
+    smartphone: <Smartphone className="w-4 h-4" />,
+    plug: <Plug className="w-4 h-4" />,
+  };
+  return iconMap[iconValue] || <Plus className="w-4 h-4" />;
+};
+
+const convertDatabaseFeatureToFeature = (dbFeature: DatabaseFeature, statuses: Status[]): Feature => {
+  const status = statuses.find(s => s.id === dbFeature.status) || statuses[0];
+  return {
+    id: dbFeature.id,
+    name: dbFeature.name,
+    description: dbFeature.description || undefined,
+    status,
+    icon: getIconComponent(dbFeature.icon),
+    priority: dbFeature.priority as 'high' | 'medium' | 'low',
+  };
+};
+
 const GlitchOwtKanban = () => {
+  const { features: dbFeatures, loading, updateFeatureStatus } = useRoadmapFeatures();
+  
   const statuses: Status[] = [
-    { id: "ideas", name: "Ideas", color: "#6B7280" },
-    { id: "building", name: "Building", color: "#F59E0B" },
-    { id: "live", name: "Live", color: "#10B981" },
+    { id: "planned", name: "Planned", color: "#6B7280" },
+    { id: "in-progress", name: "In Progress", color: "#F59E0B" },
+    { id: "done", name: "Done", color: "#10B981" },
   ];
 
-  const [features, setFeatures] = useState<Feature[]>([
-    {
-      id: "1",
-      name: "Qippy",
-      description: "Voice-first AI that handles Gmail, ChatGPT & WhatsApp. Only alerts when truly needed.",
-      status: statuses[2],
-      icon: <Mic className="w-4 h-4" />,
-      priority: "high"
-    },
-    {
-      id: "2", 
-      name: "GlitchOne",
-      description: "Your voice concierge for mobility. Book rides, handle logistics, run errands - all hands-free.",
-      status: statuses[1],
-      icon: <Car className="w-4 h-4" />,
-      priority: "high"
-    },
-    {
-      id: "3",
-      name: "Rakshak", 
-      description: "Empathetic safety companion for women. Voice-powered distress detection and response.",
-      status: statuses[1],
-      icon: <Shield className="w-4 h-4" />,
-      priority: "high"
-    },
-    {
-      id: "4",
-      name: "Zenith",
-      description: "Pre-therapy voice companion. Build mindful habits through natural conversation.",
-      status: statuses[0],
-      icon: <Brain className="w-4 h-4" />,
-      priority: "medium"
-    },
-    {
-      id: "5",
-      name: "Voice-First Calendar",
-      description: "Schedule meetings, set reminders, manage your day - all through natural speech.",
-      status: statuses[0],
-      icon: <Plus className="w-4 h-4" />,
-      priority: "medium"
-    },
-    {
-      id: "6",
-      name: "Smart Home Voice Hub",
-      description: "Control your entire smart home ecosystem through conversational AI.",
-      status: statuses[0],
-      icon: <Lightbulb className="w-4 h-4" />,
-      priority: "low"
-    },
-    {
-      id: "7",
-      name: "Voice Commerce Assistant",
-      description: "Shop, compare prices, and make purchases using only your voice.",
-      status: statuses[0],
-      icon: <Zap className="w-4 h-4" />,
-      priority: "low"
-    },
-    {
-      id: "8",
-      name: "Community Voice Network",
-      description: "Connect with like-minded people building voice-first lifestyles.",
-      status: statuses[0],
-      icon: <Users className="w-4 h-4" />,
-      priority: "medium"
-    }
-  ]);
+  const features = dbFeatures.map(dbFeature => convertDatabaseFeatureToFeature(dbFeature, statuses));
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
 
     if (!over) {
@@ -297,15 +265,16 @@ const GlitchOwtKanban = () => {
       return;
     }
 
-    setFeatures(
-      features.map((feature) => {
-        if (feature.id === active.id) {
-          return { ...feature, status: newStatus };
-        }
-        return feature;
-      })
-    );
+    await updateFeatureStatus(active.id as string, newStatus.id);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center">
+        <div className="text-muted-foreground">Loading roadmap...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">

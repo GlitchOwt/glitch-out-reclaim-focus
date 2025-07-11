@@ -5,69 +5,85 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Download, Search, Trash2, Mail, Calendar, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface WaitlistEntry {
   id: string;
   email: string;
-  joinedAt: string;
-  source: string;
+  created_at: string;
+  verified: boolean;
 }
 
 const WaitlistManager = () => {
   const { toast } = useToast();
-  const [entries, setEntries] = useState<WaitlistEntry[]>([
-    {
-      id: "1",
-      email: "john@example.com",
-      joinedAt: new Date().toISOString(),
-      source: "Newsletter Signup"
-    },
-    {
-      id: "2", 
-      email: "sarah@example.com",
-      joinedAt: new Date(Date.now() - 86400000).toISOString(),
-      source: "Newsletter Signup"
-    },
-    {
-      id: "3",
-      email: "mike@example.com", 
-      joinedAt: new Date(Date.now() - 172800000).toISOString(),
-      source: "Suggest a Glitch"
-    },
-    {
-      id: "4",
-      email: "lisa@example.com",
-      joinedAt: new Date(Date.now() - 259200000).toISOString(),
-      source: "Newsletter Signup"
-    }
-  ]);
-  
+  const [entries, setEntries] = useState<WaitlistEntry[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredEntries, setFilteredEntries] = useState<WaitlistEntry[]>(entries);
+  const [filteredEntries, setFilteredEntries] = useState<WaitlistEntry[]>([]);
+
+  const fetchSubscribers = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('subscribers')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setEntries(data || []);
+    } catch (error) {
+      console.error('Error fetching subscribers:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load subscribers",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const filtered = entries.filter(entry => 
-      entry.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      entry.source.toLowerCase().includes(searchTerm.toLowerCase())
+    fetchSubscribers();
+  }, []);
+
+  useEffect(() => {
+    const filtered = entries.filter(entry =>
+      entry.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredEntries(filtered);
-  }, [searchTerm, entries]);
+  }, [entries, searchTerm]);
 
-  const handleDeleteEntry = (entryId: string) => {
-    setEntries(entries.filter(e => e.id !== entryId));
-    toast({
-      title: "Entry deleted",
-      description: "The waitlist entry has been removed.",
-    });
+  const handleDeleteEntry = async (entryId: string) => {
+    try {
+      const { error } = await supabase
+        .from('subscribers')
+        .delete()
+        .eq('id', entryId);
+
+      if (error) throw error;
+      
+      setEntries(entries.filter(entry => entry.id !== entryId));
+      toast({
+        title: "Subscriber deleted",
+        description: "The subscriber has been removed.",
+      });
+    } catch (error) {
+      console.error('Error deleting subscriber:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete subscriber",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleDownloadCSV = () => {
     const csvContent = [
-      ['Email', 'Joined Date', 'Source'],
+      ['Email', 'Joined Date', 'Status'],
       ...filteredEntries.map(entry => [
         entry.email,
-        new Date(entry.joinedAt).toLocaleDateString(),
-        entry.source
+        new Date(entry.created_at).toLocaleDateString(),
+        entry.verified ? 'Verified' : 'Pending'
       ])
     ].map(row => row.join(',')).join('\n');
 
@@ -75,13 +91,13 @@ const WaitlistManager = () => {
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `glitchowt-waitlist-${new Date().toISOString().split('T')[0]}.csv`;
+    link.download = `glitchowt-subscribers-${new Date().toISOString().split('T')[0]}.csv`;
     link.click();
     window.URL.revokeObjectURL(url);
 
     toast({
       title: "CSV downloaded",
-      description: "The waitlist has been exported successfully.",
+      description: "The subscriber list has been exported successfully.",
     });
   };
 
@@ -95,21 +111,30 @@ const WaitlistManager = () => {
     });
   };
 
-  const getSourceIcon = (source: string) => {
-    if (source.includes('Newsletter')) {
-      return <Mail className="w-4 h-4" />;
-    }
-    return <Users className="w-4 h-4" />;
-  };
+  // Calculate stats
+  const totalEntries = entries.length;
+  const verifiedEntries = entries.filter(entry => entry.verified).length;
+  const todayEntries = entries.filter(entry => {
+    const entryDate = new Date(entry.created_at);
+    const today = new Date();
+    return entryDate.toDateString() === today.toDateString();
+  }).length;
+  const thisWeekEntries = entries.filter(entry => {
+    const entryDate = new Date(entry.created_at);
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    return entryDate >= oneWeekAgo;
+  }).length;
 
-  const stats = {
-    total: entries.length,
-    thisWeek: entries.filter(e => 
-      new Date(e.joinedAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-    ).length,
-    newsletter: entries.filter(e => e.source.includes('Newsletter')).length,
-    glitch: entries.filter(e => e.source.includes('Glitch')).length
-  };
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center py-8 text-muted-foreground">
+          Loading subscribers...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -119,8 +144,20 @@ const WaitlistManager = () => {
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4 text-brand-green" />
               <div>
-                <p className="text-sm text-muted-foreground">Total Signups</p>
-                <p className="text-2xl font-bold text-foreground">{stats.total}</p>
+                <p className="text-sm text-muted-foreground">Total Subscribers</p>
+                <p className="text-2xl font-bold text-foreground">{totalEntries}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-2">
+              <Mail className="w-4 h-4 text-brand-green" />
+              <div>
+                <p className="text-sm text-muted-foreground">Verified</p>
+                <p className="text-2xl font-bold text-foreground">{verifiedEntries}</p>
               </div>
             </div>
           </CardContent>
@@ -132,7 +169,7 @@ const WaitlistManager = () => {
               <Calendar className="w-4 h-4 text-brand-green" />
               <div>
                 <p className="text-sm text-muted-foreground">This Week</p>
-                <p className="text-2xl font-bold text-foreground">{stats.thisWeek}</p>
+                <p className="text-2xl font-bold text-foreground">{thisWeekEntries}</p>
               </div>
             </div>
           </CardContent>
@@ -141,22 +178,10 @@ const WaitlistManager = () => {
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-2">
-              <Mail className="w-4 h-4 text-brand-green" />
+              <Calendar className="w-4 h-4 text-brand-green" />
               <div>
-                <p className="text-sm text-muted-foreground">Newsletter</p>
-                <p className="text-2xl font-bold text-foreground">{stats.newsletter}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-brand-green" />
-              <div>
-                <p className="text-sm text-muted-foreground">Glitch Ideas</p>
-                <p className="text-2xl font-bold text-foreground">{stats.glitch}</p>
+                <p className="text-sm text-muted-foreground">Today</p>
+                <p className="text-2xl font-bold text-foreground">{todayEntries}</p>
               </div>
             </div>
           </CardContent>
@@ -168,11 +193,12 @@ const WaitlistManager = () => {
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <Mail className="w-5 h-5 text-brand-green" />
-              Waitlist Entries
+              Newsletter Subscribers ({filteredEntries.length})
             </CardTitle>
             <Button 
               onClick={handleDownloadCSV}
               className="flex items-center gap-2"
+              disabled={filteredEntries.length === 0}
             >
               <Download className="w-4 h-4" />
               Export CSV
@@ -183,7 +209,7 @@ const WaitlistManager = () => {
           <div className="flex items-center gap-2">
             <Search className="w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder="Search by email or source..."
+              placeholder="Search by email..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="max-w-sm"
@@ -195,7 +221,7 @@ const WaitlistManager = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>Email</TableHead>
-                  <TableHead>Source</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead>Joined Date</TableHead>
                   <TableHead className="w-[100px]">Actions</TableHead>
                 </TableRow>
@@ -204,7 +230,7 @@ const WaitlistManager = () => {
                 {filteredEntries.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
-                      No entries found
+                      {searchTerm ? "No subscribers match your search" : "No newsletter subscribers yet"}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -212,13 +238,16 @@ const WaitlistManager = () => {
                     <TableRow key={entry.id}>
                       <TableCell className="font-medium">{entry.email}</TableCell>
                       <TableCell>
-                        <div className="flex items-center gap-2">
-                          {getSourceIcon(entry.source)}
-                          {entry.source}
-                        </div>
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                          entry.verified 
+                            ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
+                            : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300'
+                        }`}>
+                          {entry.verified ? 'Verified' : 'Pending'}
+                        </span>
                       </TableCell>
                       <TableCell className="text-muted-foreground">
-                        {formatDate(entry.joinedAt)}
+                        {formatDate(entry.created_at)}
                       </TableCell>
                       <TableCell>
                         <Button
@@ -239,7 +268,7 @@ const WaitlistManager = () => {
 
           {filteredEntries.length > 0 && (
             <div className="text-sm text-muted-foreground">
-              Showing {filteredEntries.length} of {entries.length} entries
+              Showing {filteredEntries.length} of {entries.length} subscribers
             </div>
           )}
         </CardContent>
