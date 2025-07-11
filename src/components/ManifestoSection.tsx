@@ -101,8 +101,7 @@ export default function ManifestoSection() {
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 
   return (
-    <section 
-      ref={containerRef}
+    <section id="manifesto" ref={containerRef}
       className="relative w-full min-h-screen bg-[var(--color-glitch-primary-background)] overflow-hidden"
     >
       {/* Background Pattern */}
@@ -125,9 +124,9 @@ export default function ManifestoSection() {
       <div className="relative z-10 container mx-auto px-4 py-24 max-w-4xl">
         {/* Main Headline */}
         <GlitchText className="text-center mb-20">
-          <h1 className="font-headline text-6xl md:text-8xl font-bold text-[var(--color-glitch-text-primary)] leading-tight">
-            Our Manifesto
-          </h1>
+          <span className="font-pixel text-6xl md:text-8xl text-[var(--color-glitch-text-primary)] hover-glitch">
+            <span className="glitch" data-text="Our Manifesto">Our Manifesto</span>
+          </span>
         </GlitchText>
 
         {/* Manifesto Points */}

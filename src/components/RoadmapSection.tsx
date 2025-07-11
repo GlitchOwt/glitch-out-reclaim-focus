@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mic, Shield, Brain, Car, Plus, Lightbulb, Zap, Users, GitBranch, LayoutTemplate, Smartphone, Plug } from 'lucide-react';
 import { useRoadmapFeatures, type DatabaseFeature } from "@/hooks/useRoadmapFeatures";
+import { SparklesCore } from "@/components/ui/sparkles";
 
 function cn(...args: any[]) {
   return args.filter(Boolean).join(' ');
@@ -277,17 +278,30 @@ const GlitchOwtKanban = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <div className="container mx-auto py-8">
+    <div id="roadmap" className="relative min-h-screen bg-gradient-to-br from-[#FAF9F6] via-[#e9e7e1] to-[#FAF9F6]">
+      {/* Sparkles background */}
+      <div className="fixed inset-0 w-full h-full z-0 pointer-events-none" aria-hidden="true">
+        <SparklesCore
+          id="roadmap-sparkles"
+          background="transparent"
+          minSize={0.6}
+          maxSize={1.4}
+          particleDensity={80}
+          className="w-full h-full"
+          particleColor="#2d5a2d"
+          speed={0.5}
+        />
+      </div>
+      <div className="container mx-auto py-8 relative z-10">
         <motion.div 
           className="text-center mb-8"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-4xl font-bold text-foreground mb-2">
-            GlitchOwt Roadmap
-          </h1>
+          <span className="font-pixel text-2xl md:text-5xl text-foreground hover-glitch">
+            <span className="glitch" data-text="GLITCHOWT ROADMAP">GLITCHOWT ROADMAP</span>
+          </span>
           <p className="text-xl text-muted-foreground">
             Building the voice-first future. No screens. Just conversations.
           </p>
@@ -304,7 +318,7 @@ const GlitchOwtKanban = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <KanbanBoard id={status.id}>
+                <KanbanBoard id={status.id} className="bg-white/60 backdrop-blur-[6px] border border-[#e9e7e1] shadow-2xl shadow-[#14473B]/30 rounded-none">
                   <KanbanHeader 
                     name={status.name} 
                     color={status.color} 
@@ -321,6 +335,7 @@ const GlitchOwtKanban = () => {
                         description={feature.description}
                         icon={feature.icon}
                         priority={feature.priority}
+                        className="bg-white/80 backdrop-blur-[6px] border border-[#e9e7e1] shadow-lg rounded-none"
                       />
                     ))}
                   </KanbanCards>

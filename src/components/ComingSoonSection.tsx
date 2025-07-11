@@ -4,9 +4,9 @@ const ComingSoonSection = () => {
       <div className="max-w-4xl mx-auto container-padding text-center">
         <div className="space-y-8">
           <div className="space-y-4">
-            <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground">
-              That Hyperactive Sardar
-            </h2>
+            <span className="font-pixel text-4xl md:text-5xl text-foreground hover-glitch">
+              <span className="glitch" data-text="That Hyperactive Sardar">That Hyperactive Sardar</span>
+            </span>
             <p className="text-xl text-muted-foreground">
               Behind-the-scenes stories, founder vlogs, and the occasional sketch comedy reel.
             </p>

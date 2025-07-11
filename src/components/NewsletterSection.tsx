@@ -63,9 +63,9 @@ const NewsletterSection = () => {
         <div className="space-y-8">
           <div className="space-y-4">
             <Mail className="w-12 h-12 text-primary mx-auto" />
-            <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground">
-              Join the Movement
-            </h2>
+            <span className="font-pixel text-4xl md:text-5xl text-foreground hover-glitch">
+              <span className="glitch" data-text="Join the Movement">Join the Movement</span>
+            </span>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Get updates on new apps, voice-first insights, and behind-the-scenes stories 
               from That Hyperactive Sardar.

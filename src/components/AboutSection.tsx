@@ -3,9 +3,9 @@ const AboutSection = () => {
     <section id="about" className="section-padding bg-secondary/30">
       <div className="max-w-7xl mx-auto container-padding">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-8">
-            About GlitchOwt
-          </h2>
+          <span className="font-pixel text-4xl md:text-5xl text-foreground hover-glitch">
+            <span className="glitch" data-text="About GlitchOwt">About GlitchOwt</span>
+          </span>
           
           <div className="prose prose-lg max-w-none text-muted-foreground space-y-6">
             <p className="text-xl leading-relaxed">

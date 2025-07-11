@@ -1,171 +1,183 @@
+"use client";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { Mic, Zap, Lightbulb } from "lucide-react";
-import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Lightbulb, Send, Zap, CheckCircle, XCircle } from "lucide-react";
+import { SparklesCore } from "@/components/ui/sparkles";
 
 const SuggestGlitchSection = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    category: "",
-    title: "",
-    description: "",
-    useCase: ""
-  });
+  const [task, setTask] = useState("");
+  const [details, setDetails] = useState("");
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // For now, just show a success message
-    alert("Thanks for your suggestion! We'll review it and add it to our roadmap.");
-    setFormData({
-      name: "",
-      email: "",
-      category: "",
-      title: "",
-      description: "",
-      useCase: ""
-    });
-  };
-
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const handleSubmit = async () => {
+    if (!task.trim() || !details.trim() || !email.trim()) return;
+    setIsSubmitting(true);
+    setError("");
+    setSuccess(false);
+    try {
+      // Simulate API call (replace with your real endpoint)
+      const res = await fetch("/api/suggest-glitch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ task, details, email }),
+      });
+      if (!res.ok) throw new Error("Failed to submit suggestion");
+      setSuccess(true);
+      setTask("");
+      setDetails("");
+      setEmail("");
+    } catch (e: any) {
+      setError(e.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <section id="suggest" className="section-padding bg-secondary/30">
-      <div className="max-w-4xl mx-auto container-padding">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-primary text-sm font-medium mb-6">
-            <Lightbulb className="w-4 h-4" />
-            Community Input
+    <section id="suggest" className="min-h-screen bg-gradient-to-br from-[#FAF9F6] via-[#e9e7e1] to-[#FAF9F6] relative overflow-hidden font-sans">
+      {/* Sparkles background */}
+      <div className="absolute inset-0 w-full h-full z-0" aria-hidden="true">
+        <SparklesCore
+          id="suggest-glitch-particles"
+          background="transparent"
+          minSize={0.6}
+          maxSize={1.4}
+          particleDensity={50}
+          className="w-full h-full"
+          particleColor="#2d5a2d"
+          speed={0.5}
+        />
+      </div>
+      {/* Content */}
+      <div className="relative z-10 container mx-auto px-4 py-16 flex flex-col items-center justify-center min-h-screen">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <div className="flex justify-center mb-6">
+            <span className="font-pixel text-4xl md:text-6xl text-[#2d5a2d] hover-glitch">
+              <span className="glitch" data-text="Suggest the Glitch">
+                Suggest the Glitch
+              </span>
+            </span>
           </div>
-          
-          <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-6">
-            Suggest a Glitch
-          </h2>
-          
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            What's one task you wish you could voice out and forget? Help us build the next voice-first app.
+          <p className="text-xl text-neutral-700 max-w-2xl mx-auto">
+            Help us improve by suggesting new voice-powered tasks or magical ideas for our masterplan.
           </p>
-        </div>
-
-        <Card className="border-2 border-dashed border-primary/20 hover:border-primary/40 transition-colors duration-200">
-          <CardHeader>
-            <CardTitle className="font-serif text-2xl flex items-center gap-2">
-              <Mic className="w-6 h-6 text-primary" />
-              Your Voice-First App Idea
-            </CardTitle>
-            <CardDescription>
-              Think of daily frustrations that require too many taps, swipes, or visual attention. 
-              What would you rather just talk to?
-            </CardDescription>
-          </CardHeader>
-          
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Your Name</Label>
-                  <Input
-                    id="name"
-                    placeholder="What should we call you?"
-                    value={formData.name}
-                    onChange={(e) => handleInputChange("name", e.target.value)}
-                    required
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="your@email.com"
-                    value={formData.email}
-                    onChange={(e) => handleInputChange("email", e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="category">Category</Label>
-                <Select value={formData.category} onValueChange={(value) => handleInputChange("category", value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="What type of app is this?" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="productivity">Productivity</SelectItem>
-                    <SelectItem value="communication">Communication</SelectItem>
-                    <SelectItem value="lifestyle">Lifestyle</SelectItem>
-                    <SelectItem value="health">Health & Wellness</SelectItem>
-                    <SelectItem value="finance">Finance</SelectItem>
-                    <SelectItem value="entertainment">Entertainment</SelectItem>
-                    <SelectItem value="education">Education</SelectItem>
-                    <SelectItem value="travel">Travel</SelectItem>
-                    <SelectItem value="shopping">Shopping</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="title">App Name/Title</Label>
-                <Input
-                  id="title"
-                  placeholder="What would you call this voice-first app?"
-                  value={formData.title}
-                  onChange={(e) => handleInputChange("title", e.target.value)}
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="flex justify-center w-full"
+        >
+          <Card className="bg-white/60 border border-[#e9e7e1] shadow-2xl shadow-[#14473B]/30 w-full max-w-2xl rounded-none backdrop-blur-[6px] p-0">
+            <CardHeader className="text-center rounded-none p-0 pt-8 pb-4">
+              <CardTitle className="text-2xl text-[#2d5a2d] flex items-center justify-center gap-2">
+                <Lightbulb className="h-6 w-6 text-yellow-500" />
+                Share Your Voice Task Idea
+              </CardTitle>
+              <CardDescription className="text-neutral-700">
+                What would you love to do with your voice?
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6 px-8 pb-8 pt-2">
+              {/* Task Input */}
+              <div>
+                <label htmlFor="task" className="text-sm font-medium text-[#2d5a2d] mb-2 block">
+                  What task would you love to voice out?
+                </label>
+                <input
+                  id="task"
+                  type="text"
+                  value={task}
+                  onChange={(e) => setTask(e.target.value)}
+                  placeholder="e.g., Book a cab, order food, schedule meetings..."
+                  className="w-full px-4 py-3 bg-white/80 border border-[#e9e7e1] text-[#2d5a2d] placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#2d5a2d] focus:border-[#2d5a2d] transition-all duration-200 rounded-none"
+                  autoComplete="off"
                   required
                 />
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+              {/* Details Textarea */}
+              <div>
+                <label htmlFor="details" className="text-sm font-medium text-[#2d5a2d] mb-2 block">
+                  Tell us more about your idea
+                </label>
                 <Textarea
-                  id="description"
-                  placeholder="Describe what this app would do. What problem does it solve?"
-                  value={formData.description}
-                  onChange={(e) => handleInputChange("description", e.target.value)}
-                  rows={4}
+                  id="details"
+                  value={details}
+                  onChange={(e) => setDetails(e.target.value)}
+                  placeholder="Describe how you envision this working with voice commands. What would make this experience magical for you?"
+                  className="w-full min-h-[100px] px-4 py-3 bg-white/80 border border-[#e9e7e1] text-[#2d5a2d] placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#2d5a2d] focus:border-[#2d5a2d] transition-all duration-200 rounded-none"
                   required
                 />
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="useCase">Voice Interaction Example</Label>
-                <Textarea
-                  id="useCase"
-                  placeholder="Give us an example: 'Hey [AppName], ...' How would someone use this with their voice?"
-                  value={formData.useCase}
-                  onChange={(e) => handleInputChange("useCase", e.target.value)}
-                  rows={3}
+              {/* Email Input */}
+              <div>
+                <label htmlFor="email" className="text-sm font-medium text-[#2d5a2d] mb-2 block">
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Your email"
+                  className="w-full px-4 py-3 bg-white/80 border border-[#e9e7e1] text-[#2d5a2d] placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#2d5a2d] focus:border-[#2d5a2d] transition-all duration-200 rounded-none"
+                  autoComplete="email"
                   required
                 />
               </div>
-
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Button type="submit" className="flex-1" size="lg">
-                  <Zap className="w-4 h-4 mr-2" />
-                  Submit Suggestion
-                </Button>
-                <Button type="button" variant="minimal" size="lg">
-                  Save as Draft
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-
-        <div className="text-center mt-8">
-          <p className="text-sm text-muted-foreground">
-            Great ideas become part of our roadmap. Contributors get early access and credit.
-          </p>
-        </div>
+              {/* Submit Button */}
+              <Button
+                onClick={handleSubmit}
+                disabled={!task.trim() || !details.trim() || !email.trim() || isSubmitting}
+                className="w-full bg-[#14473B] hover:bg-[#0f362b] text-white font-medium py-3 rounded-none transition-all duration-200 flex items-center justify-center gap-2 shadow-lg"
+                size="lg"
+                aria-label="Submit your suggestion"
+                type="button"
+              >
+                {isSubmitting ? (
+                  <>
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      className="mr-2"
+                    >
+                      <Zap className="h-4 w-4" />
+                    </motion.div>
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    <Send className="h-4 w-4 mr-2" />
+                    Submit Suggestion
+                  </>
+                )}
+              </Button>
+              {success && (
+                <div className="flex items-center gap-2 mt-4 text-green-700 bg-green-50 border border-green-200 px-4 py-2 text-sm">
+                  <CheckCircle className="h-4 w-4" />
+                  Thank you! Your suggestion has been submitted.
+                </div>
+              )}
+              {error && (
+                <div className="flex items-center gap-2 mt-4 text-red-700 bg-red-50 border border-red-200 px-4 py-2 text-sm">
+                  <XCircle className="h-4 w-4" />
+                  {error}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     </section>
   );
