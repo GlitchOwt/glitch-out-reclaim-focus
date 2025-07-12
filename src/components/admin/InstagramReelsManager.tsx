@@ -6,8 +6,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { Trash2, Plus, Edit, Instagram, Star } from "lucide-react";
+import { Trash2, Plus, Edit, Instagram, Star, Sparkles } from "lucide-react";
 import { useInstagramReels, type NewInstagramReel } from "@/hooks/useInstagramReels";
+import { generateInstagramEmbedCode, isValidInstagramReelUrl } from "@/lib/utils";
 
 const InstagramReelsManager = () => {
   const { reels, loading, addReel, updateReel, deleteReel } = useInstagramReels();
@@ -20,14 +21,35 @@ const InstagramReelsManager = () => {
   });
   const [editingId, setEditingId] = useState<string | null>(null);
 
+  const handleGenerateEmbedCode = () => {
+    if (newReel.instagram_url && isValidInstagramReelUrl(newReel.instagram_url)) {
+      try {
+        const embedCode = generateInstagramEmbedCode(newReel.instagram_url);
+        setNewReel(prev => ({ ...prev, embed_code: embedCode }));
+      } catch (error) {
+        console.error("Error generating embed code:", error);
+      }
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      // Auto-generate embed code if not provided and URL is valid
+      let finalReel = { ...newReel };
+      if (!finalReel.embed_code && finalReel.instagram_url && isValidInstagramReelUrl(finalReel.instagram_url)) {
+        try {
+          finalReel.embed_code = generateInstagramEmbedCode(finalReel.instagram_url);
+        } catch (error) {
+          console.error("Error auto-generating embed code:", error);
+        }
+      }
+
       if (editingId) {
-        await updateReel(editingId, newReel);
+        await updateReel(editingId, finalReel);
         setEditingId(null);
       } else {
-        await addReel(newReel);
+        await addReel(finalReel);
       }
       setNewReel({
         title: "",
@@ -106,14 +128,33 @@ const InstagramReelsManager = () => {
               </div>
             </div>
             <div>
-              <Label htmlFor="embed_code">Embed Code (Optional)</Label>
+              <div className="flex items-center justify-between mb-2">
+                <Label htmlFor="embed_code">Embed Code (Optional)</Label>
+                {newReel.instagram_url && isValidInstagramReelUrl(newReel.instagram_url) && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleGenerateEmbedCode}
+                    className="flex items-center gap-1"
+                  >
+                    <Sparkles className="h-3 w-3" />
+                    Auto-generate
+                  </Button>
+                )}
+              </div>
               <Textarea
                 id="embed_code"
                 value={newReel.embed_code}
                 onChange={(e) => setNewReel(prev => ({ ...prev, embed_code: e.target.value }))}
-                placeholder="Paste Instagram embed code here"
+                placeholder="Paste Instagram embed code here or use auto-generate button"
                 rows={3}
               />
+              {newReel.instagram_url && !isValidInstagramReelUrl(newReel.instagram_url) && (
+                <p className="text-sm text-red-500 mt-1">
+                  Please enter a valid Instagram reel URL to auto-generate embed code
+                </p>
+              )}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex items-center space-x-2">

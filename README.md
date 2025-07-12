@@ -59,6 +59,44 @@ This project is built with:
 - React
 - shadcn-ui
 - Tailwind CSS
+- Supabase (Database & Authentication)
+
+## Instagram Reels Embedding Feature
+
+This project includes a powerful Instagram reels embedding system that allows visitors to view and interact with Instagram reels directly on your website without being redirected to Instagram or requiring an Instagram account.
+
+### How it works:
+
+1. **Automatic Embed Code Generation**: When you add an Instagram reel URL in the admin panel, the system automatically generates the embed code for you.
+
+2. **Direct Viewing**: Embedded reels are displayed directly on your website using Instagram's official embed iframe.
+
+3. **Fallback System**: If embed codes aren't available, the system shows a beautiful placeholder that links to Instagram.
+
+4. **Admin Management**: Use the admin panel to add, edit, and manage your Instagram reels with features like:
+   - Auto-generation of embed codes from Instagram URLs
+   - Featured reel highlighting
+   - Custom display ordering
+   - Manual embed code override
+
+### To add Instagram reels:
+
+1. Navigate to the admin panel (`/admin`)
+2. Go to the Instagram Reels Manager
+3. Enter the Instagram reel URL (e.g., `https://www.instagram.com/reel/ABC123/`)
+4. Click "Auto-generate" to create the embed code automatically
+5. Add a title and set display options
+6. Save the reel
+
+### Features:
+
+- ✅ **Direct embedding**: Reels play directly on your website
+- ✅ **No Instagram account required**: Visitors can view content without logging in
+- ✅ **Responsive design**: Works perfectly on all devices
+- ✅ **Accessibility**: Full keyboard navigation and screen reader support
+- ✅ **Visual indicators**: Clear distinction between embedded and external content
+- ✅ **Auto-generation**: Automatic embed code creation from URLs
+- ✅ **Admin management**: Easy content management interface
 
 ## How can I deploy this project?
 
