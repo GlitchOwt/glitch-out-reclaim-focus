@@ -68,7 +68,12 @@ export function AnimeNavBar({ items, className, defaultActive = "Home", handleNa
                 aria-label={item.name}
                 onClick={e => {
                   setActiveTab(item.name);
-                  if (handleNavClick) handleNavClick(e, item.url);
+                  if (item.url.startsWith('/')) {
+                    e.preventDefault();
+                    window.location.assign(item.url);
+                  } else if (handleNavClick) {
+                    handleNavClick(e, item.url);
+                  }
                 }}
                 onMouseEnter={() => setHoveredTab(item.name)}
                 onMouseLeave={() => setHoveredTab(null)}

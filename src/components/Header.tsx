@@ -5,6 +5,7 @@ const navItems = [
   { name: "About", url: "#about", icon: Users },
   { name: "Manifesto", url: "#manifesto", icon: BookOpen },
   { name: "Glitchboard", url: "#roadmap", icon: Map },
+  { name: "Newsletters", url: "/newsletters", icon: AppWindow },
   { name: "Join", url: "#join", icon: UserPlus },
 ];
 

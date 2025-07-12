@@ -5,7 +5,7 @@ import { Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-const NewsletterSection = () => {
+const NewsletterSection = ({ description }: { description?: string }) => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -27,7 +27,7 @@ const NewsletterSection = () => {
     try {
       const { error } = await supabase
         .from('subscribers')
-        .insert({ email, verified: false });
+        .insert({ email });
 
       if (error) {
         if (error.code === '23505') { // Unique constraint violation
@@ -67,8 +67,7 @@ const NewsletterSection = () => {
               <span className="glitch" data-text="Glitchowt With Us">Glitchowt With Us</span>
             </span>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Get updates on new apps, voice-first insights, and behind-the-scenes stories 
-              from That Hyperactive Sardar.
+              {description || "Get updates on new apps, voice-first insights, and behind-the-scenes stories from That Hyperactive Sardar."}
             </p>
           </div>
 

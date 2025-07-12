@@ -11,7 +11,6 @@ interface WaitlistEntry {
   id: string;
   email: string;
   created_at: string;
-  verified: boolean;
 }
 
 const WaitlistManager = () => {
@@ -79,11 +78,10 @@ const WaitlistManager = () => {
 
   const handleDownloadCSV = () => {
     const csvContent = [
-      ['Email', 'Joined Date', 'Status'],
+      ['Email', 'Joined Date'],
       ...filteredEntries.map(entry => [
         entry.email,
-        new Date(entry.created_at).toLocaleDateString(),
-        entry.verified ? 'Verified' : 'Pending'
+        new Date(entry.created_at).toLocaleDateString()
       ])
     ].map(row => row.join(',')).join('\n');
 
@@ -113,7 +111,6 @@ const WaitlistManager = () => {
 
   // Calculate stats
   const totalEntries = entries.length;
-  const verifiedEntries = entries.filter(entry => entry.verified).length;
   const todayEntries = entries.filter(entry => {
     const entryDate = new Date(entry.created_at);
     const today = new Date();
@@ -138,7 +135,7 @@ const WaitlistManager = () => {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-2">
@@ -150,19 +147,6 @@ const WaitlistManager = () => {
             </div>
           </CardContent>
         </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-2">
-              <Mail className="w-4 h-4 text-brand-green" />
-              <div>
-                <p className="text-sm text-muted-foreground">Verified</p>
-                <p className="text-2xl font-bold text-foreground">{verifiedEntries}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-2">
@@ -174,7 +158,6 @@ const WaitlistManager = () => {
             </div>
           </CardContent>
         </Card>
-
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-2">
@@ -187,7 +170,6 @@ const WaitlistManager = () => {
           </CardContent>
         </Card>
       </div>
-
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -215,57 +197,43 @@ const WaitlistManager = () => {
               className="max-w-sm"
             />
           </div>
-
-          <div className="border rounded-lg">
-            <Table>
-              <TableHeader>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Email</TableHead>
+                <TableHead>Joined Date</TableHead>
+                <TableHead className="w-[100px]">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredEntries.length === 0 ? (
                 <TableRow>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Joined Date</TableHead>
-                  <TableHead className="w-[100px]">Actions</TableHead>
+                  <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
+                    {searchTerm ? "No subscribers match your search" : "No newsletter subscribers yet"}
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredEntries.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
-                      {searchTerm ? "No subscribers match your search" : "No newsletter subscribers yet"}
+              ) : (
+                filteredEntries.map(entry => (
+                  <TableRow key={entry.id}>
+                    <TableCell className="font-medium">{entry.email}</TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {formatDate(entry.created_at)}
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleDeleteEntry(entry.id)}
+                        className="text-destructive hover:text-destructive"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </TableCell>
                   </TableRow>
-                ) : (
-                  filteredEntries.map((entry) => (
-                    <TableRow key={entry.id}>
-                      <TableCell className="font-medium">{entry.email}</TableCell>
-                      <TableCell>
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          entry.verified 
-                            ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
-                            : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300'
-                        }`}>
-                          {entry.verified ? 'Verified' : 'Pending'}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {formatDate(entry.created_at)}
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleDeleteEntry(entry.id)}
-                          className="text-destructive hover:text-destructive"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
-
+                ))
+              )}
+            </TableBody>
+          </Table>
           {filteredEntries.length > 0 && (
             <div className="text-sm text-muted-foreground">
               Showing {filteredEntries.length} of {entries.length} subscribers
