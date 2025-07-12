@@ -101,9 +101,15 @@ const SocialWallSection = () => {
                           dangerouslySetInnerHTML={{ __html: reel.embed_code }}
                         />
                       ) : (
-                        <div className="aspect-[9/16] bg-gradient-to-br from-[#2d5a2d] to-[#14473B] flex items-center justify-center relative overflow-hidden">
-                          <div className="absolute inset-0 opacity-20 bg-white/10"></div>
-                          <Instagram className="h-16 w-16 text-white/60 mb-4" />
+                        <div 
+                          className="aspect-[9/16] bg-gradient-to-br from-[#2d5a2d] to-[#14473B] flex flex-col items-center justify-center relative overflow-hidden cursor-pointer hover:from-[#14473B] hover:to-[#2d5a2d] transition-all duration-300"
+                          onClick={() => window.open(reel.instagram_url, '_blank')}
+                        >
+                          <div className="absolute inset-0 opacity-10 bg-white/5"></div>
+                          <Instagram className="h-16 w-16 text-white/80 mb-4" />
+                          <p className="text-white/70 text-sm text-center px-4">
+                            Tap to view on Instagram
+                          </p>
                         </div>
                       )}
                       
