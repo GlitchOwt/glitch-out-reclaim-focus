@@ -4,6 +4,7 @@ import AboutSection from "@/components/AboutSection";
 import VisionSection from "@/components/VisionSection";
 import ManifestoSection from "@/components/ManifestoSection";
 import RoadmapSection from "@/components/RoadmapSection";
+import SocialWallSection from "@/components/SocialWallSection";
 import SuggestGlitchSection from "@/components/SuggestGlitchSection";
 import ComingSoonSection from "@/components/ComingSoonSection";
 import NewsletterSection from "@/components/NewsletterSection";
@@ -34,6 +35,7 @@ const Index = () => {
             <VisionSection />
             <ManifestoSection />
             <RoadmapSection />
+            <SocialWallSection />
             <SuggestGlitchSection />
             <ComingSoonSection />
             <NewsletterSection />

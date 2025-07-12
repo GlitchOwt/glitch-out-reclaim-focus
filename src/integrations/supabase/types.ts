@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      instagram_reels: {
+        Row: {
+          created_at: string
+          display_order: number
+          embed_code: string | null
+          id: string
+          instagram_url: string
+          is_featured: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          embed_code?: string | null
+          id?: string
+          instagram_url: string
+          is_featured?: boolean
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          embed_code?: string | null
+          id?: string
+          instagram_url?: string
+          is_featured?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       roadmap_features: {
         Row: {
           created_at: string

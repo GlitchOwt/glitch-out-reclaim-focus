@@ -2,10 +2,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings, Users, Kanban, Download, ArrowLeft } from "lucide-react";
+import { Settings, Users, Kanban, Download, ArrowLeft, Instagram } from "lucide-react";
 import { Link } from "react-router-dom";
 import RoadmapManager from "@/components/admin/RoadmapManager";
 import WaitlistManager from "@/components/admin/WaitlistManager";
+import InstagramReelsManager from "@/components/admin/InstagramReelsManager";
 import Header from "@/components/Header";
 import ClickSpark from "@/components/ClickSpark";
 import { SparklesCore } from "@/components/ui/sparkles";
@@ -55,7 +56,7 @@ const Admin = () => {
 
           <div className="container mx-auto p-6">
             <Tabs defaultValue="roadmap" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-2 max-w-md">
+              <TabsList className="grid w-full grid-cols-3 max-w-lg">
                 <TabsTrigger value="roadmap" className="flex items-center gap-2">
                   <Kanban className="w-4 h-4" />
                   Roadmap
@@ -63,6 +64,10 @@ const Admin = () => {
                 <TabsTrigger value="waitlist" className="flex items-center gap-2">
                   <Users className="w-4 h-4" />
                   Waitlist
+                </TabsTrigger>
+                <TabsTrigger value="social" className="flex items-center gap-2">
+                  <Instagram className="w-4 h-4" />
+                  Social
                 </TabsTrigger>
               </TabsList>
 
@@ -90,6 +95,20 @@ const Admin = () => {
                   </CardHeader>
                   <CardContent className="space-y-6 px-8 pb-8 pt-2">
                     <WaitlistManager />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="social" className="space-y-6">
+                <Card className="bg-white/60 border border-[#e9e7e1] shadow-2xl shadow-[#14473B]/30 rounded-none backdrop-blur-[6px] p-0">
+                  <CardHeader className="text-center rounded-none p-0 pt-8 pb-4">
+                    <CardTitle className="text-2xl text-[#2d5a2d] flex items-center justify-center gap-2 font-pixel">
+                      <Instagram className="h-6 w-6 text-brand-green" />
+                      Social Wall Management
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6 px-8 pb-8 pt-2">
+                    <InstagramReelsManager />
                   </CardContent>
                 </Card>
               </TabsContent>
