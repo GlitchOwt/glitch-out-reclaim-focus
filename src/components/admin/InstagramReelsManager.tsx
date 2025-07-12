@@ -76,7 +76,9 @@ const InstagramReelsManager = () => {
             {editingId ? "Edit Instagram Reel" : "Add New Instagram Reel"}
           </CardTitle>
           <CardDescription>
-            Add Instagram reel URLs to display in the social wall carousel
+            Add Instagram reel URLs to display in the social wall carousel. 
+            <br />
+            <strong>To embed reels directly:</strong> Go to the Instagram reel → Click "..." → Select "Embed" → Copy the embed code and paste it below.
           </CardDescription>
         </CardHeader>
         <CardContent>
