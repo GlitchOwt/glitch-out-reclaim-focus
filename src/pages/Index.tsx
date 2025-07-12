@@ -20,9 +20,9 @@ const Index = () => {
           <SparklesCore
             id="tsparticlesfullpage"
             background="#FAF9F6"
-            minSize={1.2}
-            maxSize={2.2}
-            particleDensity={40}
+            minSize={0.8}
+            maxSize={1.5}
+            particleDensity={15}
             className="w-full h-full"
             particleColor="#2d5a2d"
           />
