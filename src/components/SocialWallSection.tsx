@@ -72,24 +72,11 @@ const SocialWallSection = () => {
     <section className="py-16 px-6 bg-gradient-to-br from-background to-muted/20">
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-12">
-          <h2 className="font-pixel text-4xl md:text-6xl text-[#2d5a2d] mb-4">
-            <span className="glitch" data-text="Social Wall">
-              Social Wall
+          <span className="font-pixel text-2xl md:text-5xl text-foreground hover-glitch">
+            <span className="glitch" data-text="GLITCH FEED">
+              GLITCH FEED
             </span>
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
-            Check out our top-performing Instagram reels showcasing the latest in digital art and glitch effects
-          </p>
-          <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground mb-6">
-            <div className="flex items-center gap-2">
-              <Badge variant="default" className="bg-green-600 text-white text-xs">Embedded</Badge>
-              <span>Watch directly on our site</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-[#2d5a2d] rounded-full"></div>
-              <span>Opens Instagram in new tab</span>
-            </div>
-          </div>
+          </span>
         </div>
 
         <div className="relative">

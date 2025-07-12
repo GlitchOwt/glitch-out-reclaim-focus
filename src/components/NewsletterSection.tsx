@@ -64,7 +64,7 @@ const NewsletterSection = () => {
           <div className="space-y-4">
             <Mail className="w-12 h-12 text-primary mx-auto" />
             <span className="font-pixel text-4xl md:text-5xl text-foreground hover-glitch">
-              <span className="glitch" data-text="Join the Movement">Join the Movement</span>
+              <span className="glitch" data-text="Glitchowt With Us">Glitchowt With Us</span>
             </span>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Get updates on new apps, voice-first insights, and behind-the-scenes stories 
@@ -94,9 +94,9 @@ const NewsletterSection = () => {
           <div className="pt-8 border-t border-border">
             <p className="text-muted-foreground">
               Or follow the journey on{" "}
-              <a href="#" className="text-primary hover:underline">Instagram</a>,{" "}
-              <a href="#" className="text-primary hover:underline">Blog</a>, or{" "}
-              <a href="#" className="text-primary hover:underline">LinkedIn</a>
+              <a href="#" className="text-primary hover:underline focus-visible:ring-2 focus-visible:underline outline-none" aria-label="Instagram">Instagram</a>,{" "}
+              <a href="#" className="text-primary hover:underline focus-visible:ring-2 focus-visible:underline outline-none" aria-label="Blog">Blog</a>, or{" "}
+              <a href="#" className="text-primary hover:underline focus-visible:ring-2 focus-visible:underline outline-none" aria-label="LinkedIn">LinkedIn</a>
             </p>
           </div>
         </div>

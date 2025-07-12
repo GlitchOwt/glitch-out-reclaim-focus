@@ -65,6 +65,7 @@ export function AnimeNavBar({ items, className, defaultActive = "Home", handleNa
               <a
                 key={item.name}
                 href={item.url}
+                aria-label={item.name}
                 onClick={e => {
                   setActiveTab(item.name);
                   if (handleNavClick) handleNavClick(e, item.url);
@@ -72,9 +73,11 @@ export function AnimeNavBar({ items, className, defaultActive = "Home", handleNa
                 onMouseEnter={() => setHoveredTab(item.name)}
                 onMouseLeave={() => setHoveredTab(null)}
                 className={cn(
-                  "relative cursor-pointer text-sm font-semibold px-6 py-3 rounded-full transition-all duration-300 text-black hover:text-black",
+                  "relative cursor-pointer text-sm font-semibold px-6 py-3 rounded-full transition-all duration-300 text-black hover:text-black focus-visible:ring-2 focus-visible:underline outline-none",
                   isActive && "text-black"
                 )}
+                tabIndex={0}
+                role="link"
               >
                 {isActive && (
                   <motion.div

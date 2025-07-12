@@ -10,7 +10,7 @@ const AboutSection = () => {
           <div className="prose prose-lg max-w-none text-muted-foreground space-y-6">
             <p className="text-xl leading-relaxed">
               GlitchOwt is not just a tech studio—it's a cultural shift. We exist to introduce 
-              a new class of voice-first apps that let users "glitch out" of screen addiction 
+              a new class of voice-first apps that let users "glitch owt" of screen addiction 
               and reclaim focus, safety, and emotional clarity.
             </p>
             

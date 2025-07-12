@@ -1,15 +1,7 @@
 'use client';
 
 import { Card } from '@/components/ui/card';
-import {
-  DndContext,
-  rectIntersection,
-  useDraggable,
-  useDroppable,
-} from '@dnd-kit/core';
-import type { DragEndEvent } from '@dnd-kit/core';
 import type { ReactNode } from 'react';
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mic, Shield, Brain, Car, Plus, Lightbulb, Zap, Users, GitBranch, LayoutTemplate, Smartphone, Plug } from 'lucide-react';
 import { useRoadmapFeatures, type DatabaseFeature } from "@/hooks/useRoadmapFeatures";
@@ -41,16 +33,13 @@ export type KanbanBoardProps = {
 };
 
 export const KanbanBoard = ({ id, children, className }: KanbanBoardProps) => {
-  const { isOver, setNodeRef } = useDroppable({ id });
-
   return (
     <div
       className={cn(
         'flex h-full min-h-96 flex-col gap-3 rounded-lg border-2 bg-background/50 p-4 shadow-sm transition-all duration-200',
-        isOver ? 'border-primary bg-primary/5' : 'border-border',
+        'border-border',
         className
       )}
-      ref={setNodeRef}
     >
       {children}
     </div>
@@ -78,12 +67,6 @@ export const KanbanCard = ({
   icon,
   priority,
 }: KanbanCardProps) => {
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id,
-      data: { index, parent },
-    });
-
   const priorityColors = {
     high: 'border-l-red-500 bg-red-50/50 dark:bg-red-950/20',
     medium: 'border-l-yellow-500 bg-yellow-50/50 dark:bg-yellow-950/20',
@@ -100,19 +83,10 @@ export const KanbanCard = ({
     >
       <Card
         className={cn(
-          'rounded-lg p-4 shadow-sm border-l-4 cursor-grab hover:shadow-md transition-all duration-200',
-          isDragging && 'cursor-grabbing opacity-50 rotate-2',
+          'rounded-lg p-4 shadow-sm border-l-4 transition-all duration-200',
           priority && priorityColors[priority],
           className
         )}
-        style={{
-          transform: transform
-            ? `translateX(${transform.x}px) translateY(${transform.y}px)`
-            : 'none',
-        }}
-        {...listeners}
-        {...attributes}
-        ref={setNodeRef}
       >
         {children ?? (
           <div className="space-y-2">
@@ -194,22 +168,18 @@ export const KanbanHeader = (props: KanbanHeaderProps) =>
 
 export type KanbanProviderProps = {
   children: ReactNode;
-  onDragEnd: (event: DragEndEvent) => void;
   className?: string;
 };
 
 export const KanbanProvider = ({
   children,
-  onDragEnd,
   className,
 }: KanbanProviderProps) => (
-  <DndContext collisionDetection={rectIntersection} onDragEnd={onDragEnd}>
-    <div
-      className={cn('grid w-full auto-cols-fr grid-flow-col gap-6 p-6', className)}
-    >
-      {children}
-    </div>
-  </DndContext>
+  <div
+    className={cn('grid w-full auto-cols-fr grid-flow-col gap-6 p-6', className)}
+  >
+    {children}
+  </div>
 );
 
 const getIconComponent = (iconValue: string) => {
@@ -243,7 +213,7 @@ const convertDatabaseFeatureToFeature = (dbFeature: DatabaseFeature, statuses: S
 };
 
 const GlitchOwtKanban = () => {
-  const { features: dbFeatures, loading, updateFeatureStatus } = useRoadmapFeatures();
+  const { features: dbFeatures, loading } = useRoadmapFeatures();
   
   const statuses: Status[] = [
     { id: "planned", name: "Planned", color: "#6B7280" },
@@ -252,22 +222,6 @@ const GlitchOwtKanban = () => {
   ];
 
   const features = dbFeatures.map(dbFeature => convertDatabaseFeatureToFeature(dbFeature, statuses));
-
-  const handleDragEnd = async (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (!over) {
-      return;
-    }
-
-    const newStatus = statuses.find((status) => status.id === over.id);
-
-    if (!newStatus) {
-      return;
-    }
-
-    await updateFeatureStatus(active.id as string, newStatus.id);
-  };
 
   if (loading) {
     return (
@@ -300,14 +254,14 @@ const GlitchOwtKanban = () => {
           transition={{ duration: 0.6 }}
         >
           <span className="font-pixel text-2xl md:text-5xl text-foreground hover-glitch">
-            <span className="glitch" data-text="GLITCHOWT ROADMAP">GLITCHOWT ROADMAP</span>
+            <span className="glitch" data-text="The Glitchboard">The Glitchboard</span>
           </span>
           <p className="text-xl text-muted-foreground">
             Building the voice-first future. No screens. Just conversations.
           </p>
         </motion.div>
 
-        <KanbanProvider onDragEnd={handleDragEnd} className="min-h-[600px]">
+        <KanbanProvider className="min-h-[600px]">
           {statuses.map((status, index) => {
             const statusFeatures = features.filter((feature) => feature.status.id === status.id);
             

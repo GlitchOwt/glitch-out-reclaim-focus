@@ -30,7 +30,7 @@ const HeroSection = () => {
           </p>
 
           <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto animate-fade-in-up animate-delay-300">
-            Voice-first AI agents that replace apps. Four tools. One movement.
+            Voice-first AI agents that replace apps. One voice. One movement.
           </p>
 
           {/* CTA Buttons */}

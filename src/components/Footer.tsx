@@ -12,26 +12,14 @@ const Footer = () => {
               Voice-first AI studio building the alternative to screen addiction.
             </p>
           </div>
-
-          {/* Apps */}
-          <div className="space-y-4">
-            <h3 className="font-serif text-lg font-bold">Apps</h3>
-            <ul className="space-y-2 text-sm">
-              <li><a href="#" className="text-background/80 hover:text-background transition-colors">Qippy</a></li>
-              <li><a href="#" className="text-background/80 hover:text-background transition-colors">GlitchOne</a></li>
-              <li><a href="#" className="text-background/80 hover:text-background transition-colors">Rakshak</a></li>
-              <li><a href="#" className="text-background/80 hover:text-background transition-colors">Zenith</a></li>
-            </ul>
-          </div>
-
           {/* Studio */}
           <div className="space-y-4">
             <h3 className="font-serif text-lg font-bold">Studio</h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="#about" className="text-background/80 hover:text-background transition-colors">About</a></li>
-              <li><a href="#manifesto" className="text-background/80 hover:text-background transition-colors">Manifesto</a></li>
-              <li><a href="#" className="text-background/80 hover:text-background transition-colors">Blog</a></li>
-              <li><a href="#" className="text-background/80 hover:text-background transition-colors">Press</a></li>
+              <li><a href="#about" className="text-background/80 hover:text-background transition-colors focus-visible:ring-2 focus-visible:underline outline-none" aria-label="About">About</a></li>
+              <li><a href="#manifesto" className="text-background/80 hover:text-background transition-colors focus-visible:ring-2 focus-visible:underline outline-none" aria-label="Manifesto">Manifesto</a></li>
+              <li><a href="#" className="text-background/80 hover:text-background transition-colors focus-visible:ring-2 focus-visible:underline outline-none" aria-label="Blog">Blog</a></li>
+              <li><a href="#" className="text-background/80 hover:text-background transition-colors focus-visible:ring-2 focus-visible:underline outline-none" aria-label="Press">Press</a></li>
             </ul>
           </div>
 
@@ -39,18 +27,10 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="font-serif text-lg font-bold">Connect</h3>
             <div className="flex gap-4">
-              <a href="#" className="text-background/80 hover:text-background transition-colors">
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-background/80 hover:text-background transition-colors">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-background/80 hover:text-background transition-colors">
-                <Linkedin className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-background/80 hover:text-background transition-colors">
-                <Mail className="w-5 h-5" />
-              </a>
+              <a href="#" className="text-background/80 hover:text-background transition-colors focus-visible:ring-2 focus-visible:underline outline-none" aria-label="Instagram"><Instagram className="w-5 h-5" /></a>
+              <a href="#" className="text-background/80 hover:text-background transition-colors focus-visible:ring-2 focus-visible:underline outline-none" aria-label="Twitter"><Twitter className="w-5 h-5" /></a>
+              <a href="#" className="text-background/80 hover:text-background transition-colors focus-visible:ring-2 focus-visible:underline outline-none" aria-label="LinkedIn"><Linkedin className="w-5 h-5" /></a>
+              <a href="#" className="text-background/80 hover:text-background transition-colors focus-visible:ring-2 focus-visible:underline outline-none" aria-label="Mail"><Mail className="w-5 h-5" /></a>
             </div>
           </div>
         </div>

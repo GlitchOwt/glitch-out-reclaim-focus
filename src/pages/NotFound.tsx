@@ -17,7 +17,7 @@ const NotFound = () => {
       <Glitchy404 width={800} height={232} color="#2d5a2d" />
       <div className="text-center mt-8">
         <p className="text-xl text-muted-foreground mb-4">Oops! Page not found</p>
-        <a href="/" className="text-primary hover:underline font-semibold">
+        <a href="/" className="text-primary hover:underline font-semibold focus-visible:ring-2 focus-visible:underline outline-none" aria-label="Return to Home">
           Return to Home
         </a>
       </div>

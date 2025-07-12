@@ -6,7 +6,6 @@ import ManifestoSection from "@/components/ManifestoSection";
 import RoadmapSection from "@/components/RoadmapSection";
 import SocialWallSection from "@/components/SocialWallSection";
 import SuggestGlitchSection from "@/components/SuggestGlitchSection";
-import ComingSoonSection from "@/components/ComingSoonSection";
 import NewsletterSection from "@/components/NewsletterSection";
 import Footer from "@/components/Footer";
 import ClickSpark from "@/components/ClickSpark";
@@ -37,7 +36,6 @@ const Index = () => {
             <RoadmapSection />
             <SocialWallSection />
             <SuggestGlitchSection />
-            <ComingSoonSection />
             <NewsletterSection />
           </main>
           <Footer />
